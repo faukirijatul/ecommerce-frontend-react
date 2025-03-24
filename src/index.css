@@ -5,3 +5,15 @@
 a.active hr {
   display: block;
 }
+
+/* Hide spinner buttons for Chrome, Safari, Edge, Opera */
+.no-spinner::-webkit-outer-spin-button,
+.no-spinner::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Hide spinner buttons for Firefox */
+.no-spinner {
+  -moz-appearance: textfield;
+}
