@@ -5,7 +5,7 @@ import Title from "../components/Title";
 import ProductItem from "../components/ProductItem";
 
 const Collection = () => {
-  const { products } = useContext(ShopContext);
+  const { products, search } = useContext(ShopContext);
   const [showFilter, setShowFilter] = useState(false);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [category, setCategory] = useState([]);
@@ -71,6 +71,22 @@ const Collection = () => {
   useEffect(() => {
     handleSort(sortType);
   }, [sortType]);
+
+  useEffect(() => {
+    if (search.length > 0) {
+      setTimeout(() => {
+        setFilteredProducts(
+          products.filter((product) =>
+            product.name.toLowerCase().includes(search.toLowerCase())
+          )
+        );
+      }, 500);
+    } else {
+      setTimeout(() => {
+        setFilteredProducts(products);
+      }, 500);
+    }
+  }, [search, products]);
 
   return (
     <div className="flex flex-col sm:flex-row gap-1 sm:gap-10 pt-10 border-t">

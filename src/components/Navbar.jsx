@@ -1,11 +1,13 @@
-import React from "react";
+import React, { useContext, useState } from "react";
 import { FaRegUserCircle } from "react-icons/fa";
 import { IoIosMenu, IoMdClose } from "react-icons/io";
 import { IoCartOutline, IoSearchOutline } from "react-icons/io5";
 import { Link, NavLink } from "react-router-dom";
+import { ShopContext } from "../context/ShopContext";
 
 const Navbar = () => {
-  const [menuOpen, setMenuOpen] = React.useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const { setSearch, showSearch, setShowSearch } = useContext(ShopContext);
   return (
     <div className="flex items-center justify-between py-5 font-medium">
       <Link to="/" className="text-2xl">
@@ -32,7 +34,13 @@ const Navbar = () => {
       </ul>
 
       <div className="flex items-center gap-5">
-        <IoSearchOutline className="text-2xl" />
+        <IoSearchOutline
+          className="text-2xl cursor-pointer"
+          onClick={() => {
+            setShowSearch(!showSearch);
+            setSearch("");
+          }}
+        />
         <div className="group relative">
           <FaRegUserCircle className="text-2xl" />
           {/* menu dropdown on hover */}
