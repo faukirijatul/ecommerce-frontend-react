@@ -7,7 +7,12 @@ import { ShopContext } from "../context/ShopContext";
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
-  const { setSearch, showSearch, setShowSearch } = useContext(ShopContext);
+  const { setSearch, showSearch, setShowSearch, cartData } =
+    useContext(ShopContext);
+
+  const cartCount = cartData
+    ?.map((item) => item.quantity)
+    .reduce((acc, curr) => acc + curr, 0);
   return (
     <div className="flex items-center justify-between py-5 font-medium">
       <Link to="/" className="text-2xl">
@@ -55,7 +60,7 @@ const Navbar = () => {
         <Link to="/cart" className="relative">
           <IoCartOutline className="text-2xl" />
           <span className="absolute leading-4 bottom-[-5px] right-[-5px] text-[8px] bg-black text-white text-center aspect-square w-4 rounded-full">
-            1
+            {cartCount || 0}
           </span>
         </Link>
 

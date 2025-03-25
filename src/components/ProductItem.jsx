@@ -1,11 +1,12 @@
 import React, { useContext } from "react";
 import { ShopContext } from "../context/ShopContext";
 import { Link } from "react-router-dom";
+import { moveToTop } from "../lib/moveToTop";
 
 const ProductItem = ({ productId, image, name, price }) => {
   const { currency } = useContext(ShopContext);
   return (
-    <Link to={`/product/${productId}`} className="text-gray-700">
+    <Link to={`/product/${productId}`} className="text-gray-700" onClick={() => moveToTop()}>
       <div className="overflow-hidden">
         <img
           src={image}

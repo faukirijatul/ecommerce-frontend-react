@@ -1,12 +1,13 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { moveToTop } from "../lib/moveToTop";
 
 const Footer = () => {
   return (
     <>
       <div className="flex flex-col sm:grid grid-cols-[3fr_1fr_1fr] gap-14 my-10 mt-20 text-sm">
         <div>
-          <Link to="/" className="text-2xl">
+          <Link to="/" className="text-2xl" onClick={() => moveToTop()}>
             Tokobaju
           </Link>
           <p className="w-full md:w-2/3 text-gray-600 mt-5">
@@ -38,7 +39,7 @@ const Footer = () => {
         <hr />
         <p className="text-center text-gray-500 my-5">
           &copy; {new Date().getFullYear()}.{" "}
-          <Link to="/" className="font-medium">
+          <Link to="/" className="font-medium" onClick={() => moveToTop()}>
             Tokobaju
           </Link>{" "}
           - All rights reserved

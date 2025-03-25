@@ -1,11 +1,13 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { ShopContext } from "../context/ShopContext";
+import RelatedProducts from "../components/RelatedProducts";
+import { toast } from "react-toastify";
 
 const Product = () => {
   const { productId } = useParams();
 
-  const { products, currency } = useContext(ShopContext);
+  const { products, currency, setCartData } = useContext(ShopContext);
   const [product, setProduct] = useState(null);
   const [image, setImage] = useState("");
   const [size, setSize] = useState(null);
@@ -23,12 +25,36 @@ const Product = () => {
     const orderItem = {
       ...product,
       size,
-      quantity,
+      quantity: Number(quantity),
     };
 
     const cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
-    cartItems.push(orderItem);
-    localStorage.setItem("cartItems", JSON.stringify(cartItems));
+
+    if (
+      cartItems.some(
+        (item) => item._id === orderItem._id && item.size === orderItem.size
+      )
+    ) {
+      const updatedCartItems = cartItems.map((item) => {
+        if (item._id === orderItem._id) {
+          return {
+            ...item,
+            quantity: Number(item.quantity) + Number(quantity),
+          };
+        }
+        return item;
+      });
+      localStorage.setItem("cartItems", JSON.stringify(updatedCartItems));
+      setCartData(updatedCartItems);
+      toast.success("Cart Updated");
+    } else {
+      localStorage.setItem(
+        "cartItems",
+        JSON.stringify([...cartItems, orderItem])
+      );
+      setCartData([...cartItems, orderItem]);
+      toast.success("New Product Added to Cart");
+    }
   };
 
   return (
@@ -39,8 +65,9 @@ const Product = () => {
           <div className="w-full sm:w-1/2">
             <img src={image} alt="product" className="w-full object-cover" />
             <div className="grid grid-cols-5 gap-1 mt-5 w-full">
-              {product.image.map((img) => (
+              {product.image.map((img, index) => (
                 <img
+                  key={index}
                   src={img}
                   alt="product"
                   className={`object-cover border border-gray-300 ${
@@ -124,6 +151,13 @@ const Product = () => {
           <h2 className="text-2xl font-medium">Description</h2>
           <p className="mt-3 whitespace-pre-wrap">{product.description}</p>
         </div>
+
+        {/* related products */}
+
+        <RelatedProducts
+          category={product.category}
+          subCategory={product.subCategory}
+        />
       </div>
     )
   );
