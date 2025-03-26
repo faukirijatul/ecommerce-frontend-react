@@ -1,12 +1,13 @@
 import React, { useContext, useState } from "react";
-import { FaRegUserCircle } from "react-icons/fa";
 import { IoIosMenu, IoMdClose } from "react-icons/io";
 import { IoCartOutline, IoSearchOutline } from "react-icons/io5";
 import { Link, NavLink } from "react-router-dom";
 import { ShopContext } from "../context/ShopContext";
+import { CiUser } from "react-icons/ci";
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isLoggedIn] = useState(false);
   const { setSearch, showSearch, setShowSearch, cartData } =
     useContext(ShopContext);
 
@@ -46,17 +47,24 @@ const Navbar = () => {
             setSearch("");
           }}
         />
-        <div className="group relative">
-          <FaRegUserCircle className="text-2xl" />
-          {/* menu dropdown on hover */}
-          <div className="absolute hidden group-hover:block right-0 pt-3">
-            <div className="flex flex-col gap-2 w-36 px-5 bg-slate-100 text-gray-500 rounded">
-              <p className="py-3 cursor-pointer hover:text-black">Profile</p>
-              <p className="py-3 cursor-pointer hover:text-black">Orders</p>
-              <p className="py-3 cursor-pointer hover:text-black">Logout</p>
+        {!isLoggedIn ? (
+          <Link to="/login">
+            <CiUser className="text-2xl" />
+          </Link>
+        ) : (
+          <div className="group relative cursor-pointer">
+            <CiUser className="text-2xl" />
+            {/* menu dropdown on hover */}
+            <div className="absolute hidden group-hover:block right-0 pt-3">
+              <div className="flex flex-col gap-2 w-36 px-5 bg-slate-100 text-gray-500 rounded py-1 border">
+                <p className="py-1 cursor-pointer hover:text-black">Profile</p>
+                <p className="py-1 cursor-pointer hover:text-black">Orders</p>
+                <p className="py-1 cursor-pointer hover:text-black">Logout</p>
+              </div>
             </div>
           </div>
-        </div>
+        )}
+
         <Link to="/cart" className="relative">
           <IoCartOutline className="text-2xl" />
           <span className="absolute leading-4 bottom-[-5px] right-[-5px] text-[8px] bg-black text-white text-center aspect-square w-4 rounded-full">

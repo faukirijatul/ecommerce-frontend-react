@@ -11,6 +11,14 @@ export const ShopeContextProvider = ({ children }) => {
     JSON.parse(localStorage.getItem("cartItems")) || []
   );
 
+  const getAmount = () => {
+    let amount = 0;
+    cartData.forEach((product) => {
+      let totalPerItem = product.price * product.quantity;
+      amount = amount + totalPerItem;
+    });
+    return amount;
+  };
 
   const value = {
     products,
@@ -22,6 +30,7 @@ export const ShopeContextProvider = ({ children }) => {
     setShowSearch,
     cartData,
     setCartData,
+    getAmount
   };
 
   return <ShopContext.Provider value={value}>{children}</ShopContext.Provider>;

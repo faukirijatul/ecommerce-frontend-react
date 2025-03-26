@@ -2,8 +2,8 @@ import React, { useContext } from "react";
 import { ShopContext } from "../context/ShopContext";
 import Title from "./Title";
 
-const CartTotal = ({ getAmount }) => {
-  const { currency, deliveryFee } = useContext(ShopContext);
+const CartTotal = () => {
+  const { currency, deliveryFee, getAmount } = useContext(ShopContext);
   return (
     <div className="w-full">
       <div className="text-xl">

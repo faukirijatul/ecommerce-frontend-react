@@ -1,10 +1,13 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 
-const Login = () => {
+const Register = () => {
   const [formData, setFormData] = React.useState({
+    name: "",
     email: "",
     password: "",
+    confirmPassword: "",
   });
 
   const handleChange = (e) => {
@@ -15,6 +18,11 @@ const Login = () => {
     e.preventDefault();
 
     console.log(formData);
+
+    if (formData.password !== formData.confirmPassword) {
+      toast.error("Password and Confirm Password not match");
+      return;
+    }
   };
   return (
     <form
@@ -22,10 +30,18 @@ const Login = () => {
       className="flex flex-col items-center w-[90%] sm:w-96 m-auto mt-14 gap-4 text-gray-800 min-h-[52vh]"
     >
       <div className="inline-flex items-center gap-3 mb-2 mt-10">
-        <h1 className="text-3xl font-semibold">Login</h1>
+        <h1 className="text-3xl font-semibold">Register</h1>
         <hr className="w-8 border-none h-0.5 bg-gray-800" />
       </div>
 
+      <input
+        type="text"
+        placeholder="Name"
+        name="name"
+        className="border border-gray-400 rounded py-1.5 px-3.5 w-full"
+        onChange={handleChange}
+        required
+      />
       <input
         type="email"
         placeholder="Email"
@@ -42,25 +58,27 @@ const Login = () => {
         onChange={handleChange}
         required
       />
-
-      <div className="w-full flex justify-start text-sm">
-        <Link to="#" className="text-gray-700 hover:text-gray-900 font-medium">
-          Forgot Password?
-        </Link>
-      </div>
+      <input
+        type="password"
+        placeholder="Confirm Password"
+        name="confirmPassword"
+        className="border border-gray-400 rounded py-1.5 px-3.5 w-full"
+        onChange={handleChange}
+        required
+      />
 
       <button className="bg-gray-700 active:bg-gray-900 text-white py-2 px-4 w-full">
-        Login
+        Register
       </button>
 
       <div className="w-full flex justify-center text-sm mt-1">
-        Don't have an account?
-        <Link to="/register" className="text-gray-700 hover:text-gray-900 font-medium ml-1">
-          Register
+        Already have an account?
+        <Link to="/login" className="text-gray-700 hover:text-gray-900 font-medium ml-1">
+          Login
         </Link>
       </div>
     </form>
   );
 };
 
-export default Login;
+export default Register;

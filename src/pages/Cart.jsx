@@ -3,9 +3,11 @@ import { ShopContext } from "../context/ShopContext";
 import Title from "../components/Title";
 import { AiOutlineDelete } from "react-icons/ai";
 import CartTotal from "../components/CartTotal";
+import { useNavigate } from "react-router-dom";
 
 const Cart = () => {
   const { cartData, setCartData, currency } = useContext(ShopContext);
+  const navigate = useNavigate()
 
   useEffect(() => {
     if (localStorage.getItem("cartItems")) {
@@ -49,16 +51,6 @@ const Cart = () => {
     }
   };
 
-  const getAmount = () => {
-    let amount = 0;
-    cartData.forEach((product) => {
-      let totalPerItem = product.price * product.quantity;
-      amount = amount + totalPerItem;
-    });
-    return amount;
-  };
-
-  console.log(getAmount());
   return (
     <div className="border-t pt-14">
       <div className="text-2xl mb-3">
@@ -134,11 +126,12 @@ const Cart = () => {
 
       <div className="flex justify-end my-20">
         <div className="w-full sm:w-[450px]">
-          <CartTotal getAmount={getAmount} />
+          <CartTotal />
 
           <div className="mt-10 flex justify-end">
             <button
               className={`bg-gray-700 active:bg-gray-900 text-white py-2 px-4`}
+              onClick={() => navigate("/place-order")}
             >
               Checkout
             </button>
