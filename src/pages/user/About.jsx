@@ -1,5 +1,5 @@
 import React from "react";
-import Title from "../components/Title";
+import Title from "../../components/Title";
 
 const About = () => {
   return (
@@ -17,7 +17,7 @@ const About = () => {
 
         <div className="flex flex-col gap-3">
           <p className="text-justify">
-            Forever was born out of a passion for innovation and a desire to
+            Tokobaju was born out of a passion for innovation and a desire to
             revolutionize the way people shop online. Our journey began with a
             simple idea: to provide a platform where customers can easily
             discover, explore, and purchase a wide range of products from the
@@ -32,7 +32,7 @@ const About = () => {
           </p>
           <h2 className="text-xl font-semibold">Our Mission</h2>
           <p className="text-justify">
-            Our mission at Forever is to empower customers with choice,
+            Our mission at Tokobaju is to empower customers with choice,
             convenience, and confidence. We're dedicated to providing a seamless
             shopping experience that exceeds expectations, from browsing and
             ordering to delivery and beyond.
@@ -64,7 +64,7 @@ const About = () => {
         <div className="border p-4 md:p-8 flex flex-col gap-5">
           <h3 className="font-bold">3. Customer Support</h3>
           <p>
-            Forever offers a dedicated customer support team who are here to
+            Tokobaju offers a dedicated customer support team who are here to
             help you with any questions or concerns you may have. From
             troubleshooting orders to resolving issues, we're here to support
             you.

@@ -1,7 +1,17 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { loginUser } from "../redux/slices/userSlice";
 
 const Login = () => {
+  // const [showPassword, setShowPassword] = React.useState(false);
+  const dispatch = useDispatch();
+  const { loginLoading } = useSelector((state) => state.user);
+  const navigate = useNavigate();
+
+  const [searchParams] = useSearchParams();
+  const redirect = searchParams.get("redirect");
+
   const [formData, setFormData] = React.useState({
     email: "",
     password: "",
@@ -11,10 +21,21 @@ const Login = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    console.log(formData);
+    const result = await dispatch(loginUser(formData)).unwrap();
+
+    if (result) {
+      if (result.user.role === "admin") {
+        navigate(redirect || "/admin/orders", { replace: true });
+      } else {
+        navigate(redirect || "/", { replace: true });
+      }
+    }
+
+    // Clear form after successful login
+    setFormData({ email: "", password: "" });
   };
   return (
     <form
@@ -50,12 +71,15 @@ const Login = () => {
       </div>
 
       <button className="bg-gray-700 active:bg-gray-900 text-white py-2 px-4 w-full">
-        Login
+        {loginLoading ? "Loading..." : "Login"}
       </button>
 
       <div className="w-full flex justify-center text-sm mt-1">
         Don't have an account?
-        <Link to="/register" className="text-gray-700 hover:text-gray-900 font-medium ml-1">
+        <Link
+          to="/register"
+          className="text-gray-700 hover:text-gray-900 font-medium ml-1"
+        >
           Register
         </Link>
       </div>

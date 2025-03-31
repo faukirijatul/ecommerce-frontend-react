@@ -1,19 +1,31 @@
 import React, { useContext, useState } from "react";
 import { IoIosMenu, IoMdClose } from "react-icons/io";
 import { IoCartOutline, IoSearchOutline } from "react-icons/io5";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { ShopContext } from "../context/ShopContext";
 import { CiUser } from "react-icons/ci";
+import { useDispatch, useSelector } from "react-redux";
+import { logoutUser } from "../redux/slices/userSlice";
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [isLoggedIn] = useState(false);
   const { setSearch, showSearch, setShowSearch, cartData } =
     useContext(ShopContext);
+
+  const dispatch = useDispatch();
+  const { user, logoutLoading } = useSelector((state) => state.user);
+
+  const navigate = useNavigate();
+
+  const pathname = window.location.pathname;
 
   const cartCount = cartData
     ?.map((item) => item.quantity)
     .reduce((acc, curr) => acc + curr, 0);
+
+  const handleLogout = () => {
+    dispatch(logoutUser());
+  };
   return (
     <div className="flex items-center justify-between py-5 font-medium">
       <Link to="/" className="text-2xl">
@@ -47,23 +59,6 @@ const Navbar = () => {
             setSearch("");
           }}
         />
-        {!isLoggedIn ? (
-          <Link to="/login">
-            <CiUser className="text-2xl" />
-          </Link>
-        ) : (
-          <div className="group relative cursor-pointer">
-            <CiUser className="text-2xl" />
-            {/* menu dropdown on hover */}
-            <div className="absolute hidden group-hover:block right-0 pt-3">
-              <div className="flex flex-col gap-2 w-36 px-5 bg-slate-100 text-gray-500 rounded py-1 border">
-                <p className="py-1 cursor-pointer hover:text-black">Profile</p>
-                <p className="py-1 cursor-pointer hover:text-black">Orders</p>
-                <p className="py-1 cursor-pointer hover:text-black">Logout</p>
-              </div>
-            </div>
-          </div>
-        )}
 
         <Link to="/cart" className="relative">
           <IoCartOutline className="text-2xl" />
@@ -71,6 +66,42 @@ const Navbar = () => {
             {cartCount || 0}
           </span>
         </Link>
+
+        {!user ? (
+          <Link to={`/login?redirect=${pathname}`}>
+            <button className="bg-gray-700 text-white hover:bg-gray-800 px-5 py-2 sm:px-7 rounded-full text-xs sm:text-sm">
+              Login
+            </button>
+          </Link>
+        ) : (
+          <div className="group relative cursor-pointer">
+            <div className="flex items-center gap-2">
+              <CiUser className="text-2xl" />
+              <span className="hidden sm:block">
+                Hi, {user.name.split(" ")[0]}
+              </span>
+            </div>
+            {/* menu dropdown on hover */}
+            <div className="absolute hidden group-hover:block right-0 pt-3">
+              <div className="flex flex-col gap-2 w-36 px-5 bg-slate-100 text-gray-500 rounded py-1 border">
+                <p className="py-1 cursor-pointer hover:text-black" onClick={() => navigate("/profile")}>Profile</p>
+                {user?.role === "admin" ? (
+                  <p className="py-1 cursor-pointer hover:text-black" onClick={() => navigate("/admin/orders")}>
+                    Admin Panel
+                  </p>
+                ) : (
+                  <p className="py-1 cursor-pointer hover:text-black" onClick={() => navigate("/orders")}>Orders</p>
+                )}
+                <p
+                  className="py-1 cursor-pointer hover:text-black"
+                  onClick={handleLogout}
+                >
+                  {logoutLoading ? "Loading..." : "Logout"}
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
 
         <IoIosMenu
           className="text-2xl sm:hidden cursor-pointer"

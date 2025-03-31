@@ -1,8 +1,14 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { registerUser } from "../redux/slices/userSlice";
 
 const Register = () => {
+  const dispatch = useDispatch();
+  const { registerLoading } = useSelector((state) => state.user);
+  const navigate = useNavigate();
+
   const [formData, setFormData] = React.useState({
     name: "",
     email: "",
@@ -14,15 +20,29 @@ const Register = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
-    console.log(formData);
 
     if (formData.password !== formData.confirmPassword) {
       toast.error("Password and Confirm Password not match");
       return;
     }
+
+    const result = await dispatch(registerUser(formData)).unwrap();
+
+    // log payload
+    console.log(result);
+
+    if (result.success) {
+      navigate("/login", { replace: true });
+    }
+    // Reset form data after successful registration
+    setFormData({
+      name: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    });
   };
   return (
     <form
@@ -68,12 +88,15 @@ const Register = () => {
       />
 
       <button className="bg-gray-700 active:bg-gray-900 text-white py-2 px-4 w-full">
-        Register
+        {registerLoading ? "Loading..." : "Register"}
       </button>
 
       <div className="w-full flex justify-center text-sm mt-1">
         Already have an account?
-        <Link to="/login" className="text-gray-700 hover:text-gray-900 font-medium ml-1">
+        <Link
+          to="/login"
+          className="text-gray-700 hover:text-gray-900 font-medium ml-1"
+        >
           Login
         </Link>
       </div>

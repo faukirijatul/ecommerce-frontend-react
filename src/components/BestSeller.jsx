@@ -1,17 +1,35 @@
-import React, { useContext, useEffect, useState } from "react";
-import { ShopContext } from "../context/ShopContext";
+import React, { useEffect, useState } from "react";
 import Title from "./Title";
 import ProductItem from "./ProductItem";
+import axios from "axios";
 
 const BestSeller = () => {
-  const { products } = useContext(ShopContext);
-
   const [bestSeller, setBestSeller] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const filtered = [...products].filter((p) => p.bestseller === true);
-    setBestSeller(filtered.slice(0, 10));
-  }, [products]);
+    setLoading(true);
+    const getLatest = async () => {
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_URL}/api/v1/products`,
+        {
+          params: {
+            sortBy: "sold",
+            sortOrder: "desc",
+            limit: 10,
+          },
+        }
+      );
+      setBestSeller(response.data.products);
+    };
+
+    getLatest();
+    setLoading(false);
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="my-10">
@@ -29,9 +47,10 @@ const BestSeller = () => {
           <ProductItem
             key={product._id}
             productId={product._id}
-            image={product.image[0]}
+            image={product.image[0]?.url}
             name={product.name}
             price={product.price}
+            sold={product.sold}
           />
         ))}
       </div>

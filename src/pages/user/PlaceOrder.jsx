@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import Title from "../components/Title";
-import CartTotal from "../components/CartTotal";
-import stripeLogo from "../assets/images/stripe_logo.png";
-import razorpayLogo from "../assets/images/razorpay_logo.png";
+import Title from "../../components/Title";
+import CartTotal from "../../components/CartTotal";
+import stripeLogo from "../../assets/images/stripe_logo.png";
+import razorpayLogo from "../../assets/images/razorpay_logo.png";
 import { useNavigate } from "react-router-dom";
 
 const PlaceOrder = () => {

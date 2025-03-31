@@ -1,19 +1,23 @@
 import React, { useContext, useEffect } from "react";
-import { ShopContext } from "../context/ShopContext";
-import Title from "../components/Title";
+import { ShopContext } from "../../context/ShopContext";
+import Title from "../../components/Title";
 import { AiOutlineDelete } from "react-icons/ai";
-import CartTotal from "../components/CartTotal";
+import CartTotal from "../../components/CartTotal";
 import { useNavigate } from "react-router-dom";
 
 const Cart = () => {
   const { cartData, setCartData, currency } = useContext(ShopContext);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (localStorage.getItem("cartItems")) {
       localStorage.setItem("cartItems", JSON.stringify(cartData));
     }
   }, [cartData]);
+
+  console.log("====================================");
+  console.log(cartData);
+  console.log("====================================");
 
   const increaseQuantity = (productId, size) => {
     setCartData((prevCart) => {
@@ -61,17 +65,17 @@ const Cart = () => {
         {cartData.map((product) => (
           <div
             key={product._id + product.size}
-            className="py-4 border-t border-b text-gray-700 grid grid-cols-[4fr_0.5fr_0.5fr] sm:grid-cols-[4fr_2fr_0.5fr] items-center gap-4"
+            className="py-4 border-t border-b text-gray-700 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4"
           >
             <div className="flex items-start gap-6">
               <img
-                src={product.image[0]}
+                src={product.image[0].url}
                 alt={product.name}
-                className="w-166 sm:w-20"
+                className="w-16 sm:w-20 border"
               />
               <div>
                 <p
-                  className="text-xs sm:text-lg font-medium line-clamp-2"
+                  className="text-base sm:text-lg font-medium line-clamp-2 leading-6 sm:leading-6"
                   title={product.name}
                 >
                   {product.name}
@@ -86,40 +90,42 @@ const Cart = () => {
                 </div>
               </div>
             </div>
-            <div className="flex flex-col gap-1 items-center">
-              <div className="flex gap-2">
-                <button
-                  className="border border-gray-700 py-1 px-3 active:bg-gray-200"
-                  onClick={() => {
-                    if (product.quantity > 1) {
-                      decreaseQuantity(product._id, product.size);
-                    }
-                  }}
-                >
-                  -
-                </button>
-                <input
-                  type="number"
-                  className="border border-gray-700 py-1 px-1 w-12 text-center outline-none no-spinner"
-                  value={product.quantity}
-                  readOnly
-                />
-                <button
-                  className="border border-gray-700 py-1 px-3 active:bg-gray-200"
-                  onClick={() => increaseQuantity(product._id, product.size)}
-                >
-                  +
-                </button>
+            <div className="flex items-center justify-between gap-10">
+              <div className="flex flex-col gap-1 items-center">
+                <div className="flex gap-2">
+                  <button
+                    className="border border-gray-700 py-1 px-3 active:bg-gray-200"
+                    onClick={() => {
+                      if (product.quantity > 1) {
+                        decreaseQuantity(product._id, product.size);
+                      }
+                    }}
+                  >
+                    -
+                  </button>
+                  <input
+                    type="number"
+                    className="border border-gray-700 py-1 px-1 w-12 text-center outline-none no-spinner"
+                    value={product.quantity}
+                    readOnly
+                  />
+                  <button
+                    className="border border-gray-700 py-1 px-3 active:bg-gray-200"
+                    onClick={() => increaseQuantity(product._id, product.size)}
+                  >
+                    +
+                  </button>
+                </div>
+                <p className="font-semibold">
+                  {currency}{" "}
+                  {(product.price * product.quantity).toLocaleString("id")}
+                </p>
               </div>
-              <p className="font-semibold">
-                {currency}{" "}
-                {(product.price * product.quantity).toLocaleString("id")}
-              </p>
+              <AiOutlineDelete
+                className="text-2xl hover:text-red-400 cursor-pointer"
+                onClick={() => handleDelete(product._id, product.size)}
+              />
             </div>
-            <AiOutlineDelete
-              className="text-2xl hover:text-red-400 cursor-pointer"
-              onClick={() => handleDelete(product._id, product.size)}
-            />
           </div>
         ))}
       </div>

@@ -1,17 +1,36 @@
-import React, { useContext, useEffect, useState } from "react";
-import { ShopContext } from "../context/ShopContext";
+import React, { useEffect, useState } from "react";
 import Title from "./Title";
 import ProductItem from "./ProductItem";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { moveToTop } from "../lib/moveToTop";
 
 const LatestCollection = () => {
-  const { products } = useContext(ShopContext);
-
   const [latestProduct, setLatestProduct] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const sortedProducts = [...products].sort((a, b) => b.date - a.date);
-    setLatestProduct(sortedProducts.slice(0, 10));
-  }, [products]);
+    setLoading(true);
+    const getLatest = async () => {
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_URL}/api/v1/products`,
+        {
+          params: {
+            limit: 10,
+          },
+        }
+      );
+      setLatestProduct(response.data.products);
+    };
+
+    getLatest();
+    setLoading(false);
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="my-10">
@@ -29,11 +48,24 @@ const LatestCollection = () => {
           <ProductItem
             key={product._id}
             productId={product._id}
-            image={product.image[0]}
+            image={product.image[0]?.url}
             name={product.name}
             price={product.price}
+            sold={product.sold}
           />
         ))}
+      </div>
+
+      <div className="text-center mt-10">
+        <button
+          className="bg-gray-800 hover:bg-gray-900 text-white py-2 px-4 mt-6"
+          onClick={() => {
+            navigate("/collection");
+            moveToTop();
+          }}
+        >
+          View All Collection
+        </button>
       </div>
     </div>
   );

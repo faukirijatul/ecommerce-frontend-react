@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
-import { ShopContext } from "../context/ShopContext";
-import Title from "../components/Title";
+import { ShopContext } from "../../context/ShopContext";
+import Title from "../../components/Title";
 
 const Orders = () => {
   const { products, currency } = useContext(ShopContext);
@@ -26,11 +26,18 @@ const Orders = () => {
               <div className="">
                 <p className="font-medium text-base">{product.name}</p>
                 <div className="flex items-center gap-3 mt-2 text-base text-gray-700">
-                  <p className="text-lg">{currency} {product.price.toLocaleString("id")}</p>
+                  <p className="text-lg">
+                    {currency} {product.price.toLocaleString("id")}
+                  </p>
                   <p className="">Quantity: {product.quantity || 1}</p>
                   <p className="">Size: {product.size || "2XL"}</p>
                 </div>
-                <p>Date: <span className="text-gray-400">{product.date || "2023-01-01"}</span></p>
+                <p>
+                  Date:{" "}
+                  <span className="text-gray-400">
+                    {product.date || "2023-01-01"}
+                  </span>
+                </p>
               </div>
             </div>
 
@@ -39,7 +46,9 @@ const Orders = () => {
                 <p className="min-w-2 h-2 rounded-full bg-green-500"></p>
                 <p className="text-sm md:text-base">Ready to ship</p>
               </div>
-              <button className="border border-gray-400 p-1">Track Order</button>
+              <button className="border border-gray-400 p-1">
+                Track Order
+              </button>
             </div>
           </div>
         ))}

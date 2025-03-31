@@ -1,19 +1,25 @@
-import React, { useContext, useEffect, useState } from "react";
-import { ShopContext } from "../context/ShopContext";
+import React, { useEffect, useState } from "react";
 import Title from "./Title";
 import ProductItem from "./ProductItem";
+import axios from "axios";
 
-const RelatedProducts = ({ category, subCategory }) => {
-  const { products } = useContext(ShopContext);
+const RelatedProducts = ({ category, subCategory, productId }) => {
   const [related, setRelated] = useState([]);
 
   useEffect(() => {
-    const filteredProducts = products.filter(
-      (product) =>
-        product.category === category && product.subCategory === subCategory
-    );
-    setRelated(filteredProducts);
-  }, [category, subCategory, products]);
+    const getRelated = async () => {
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/v1/products`, {
+        params: {
+          category,
+          subCategory,
+          limit : 11,
+        },
+      });
+      setRelated(response.data.products.filter((p) => p._id !== productId));;
+    }
+
+    getRelated();
+  }, [category, subCategory, productId]);
 
   return (
     <div className="my-20">
@@ -26,9 +32,10 @@ const RelatedProducts = ({ category, subCategory }) => {
           <ProductItem
             key={product._id}
             productId={product._id}
-            image={product.image[0]}
+            image={product.image[0].url}
             name={product.name}
             price={product.price}
+            sold={product.sold}
           />
         ))}
       </div>
