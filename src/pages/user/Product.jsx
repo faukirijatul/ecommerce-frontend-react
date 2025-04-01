@@ -5,12 +5,14 @@ import RelatedProducts from "../../components/RelatedProducts";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { getProduct } from "../../redux/slices/productSlice";
+import { addToCart, addToLocalCart } from "../../redux/slices/cartSlice";
 
 const Product = () => {
   const { productId } = useParams();
   const dispatch = useDispatch();
   const { product } = useSelector((state) => state.product);
-  const { currency, setCartData } = useContext(ShopContext);
+  const { user } = useSelector((state) => state.user);
+  const { currency } = useContext(ShopContext);
   const [image, setImage] = useState("");
   const [size, setSize] = useState({
     size: "",
@@ -26,7 +28,7 @@ const Product = () => {
     });
   }, [productId, dispatch]);
 
-  const handleAddToCart = () => {
+  const handleAddToCart = async () => {
     // Validate size selection
     if (!size.size) {
       toast.error("Please select a size");
@@ -39,49 +41,63 @@ const Product = () => {
       return;
     }
 
-    const orderItem = {
-      ...product,
-      size: size.size,
-      quantity: Number(quantity),
-    };
+    // const cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
 
-    const cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
+    // // Check if item with same ID AND size AND other properties already exists
+    // const existingItemIndex = cartItems.findIndex(
+    //   (item) =>
+    //     item._id === orderItem._id &&
+    //     item.size === orderItem.size &&
+    //     item.name === orderItem.name &&
+    //     item.category === orderItem.category
+    // );
 
-    // Check if item with same ID AND size AND other properties already exists
-    const existingItemIndex = cartItems.findIndex(
-      (item) =>
-        item._id === orderItem._id &&
-        item.size === orderItem.size &&
-        item.name === orderItem.name &&
-        item.category === orderItem.category
-    );
+    // if (existingItemIndex !== -1) {
+    //   // Update existing item's quantity
+    //   const updatedCartItems = [...cartItems];
+    //   const newQuantity =
+    //     Number(updatedCartItems[existingItemIndex].quantity) + Number(quantity);
 
-    if (existingItemIndex !== -1) {
-      // Update existing item's quantity
-      const updatedCartItems = [...cartItems];
-      const newQuantity =
-        Number(updatedCartItems[existingItemIndex].quantity) + Number(quantity);
+    //   // Check if new total quantity exceeds available stock
+    //   if (newQuantity > size.quantity) {
+    //     toast.error("Exceeds available stock");
+    //     return;
+    //   }
 
-      // Check if new total quantity exceeds available stock
-      if (newQuantity > size.quantity) {
-        toast.error("Exceeds available stock");
-        return;
+    //   updatedCartItems[existingItemIndex] = {
+    //     ...updatedCartItems[existingItemIndex],
+    //     quantity: newQuantity,
+    //   };
+
+    //   localStorage.setItem("cartItems", JSON.stringify(updatedCartItems));
+    //   setCartData(updatedCartItems);
+    //   toast.success("Cart Updated");
+    // } else {
+    //   // Add new item to cart
+    //   const updatedCartItems = [...cartItems, orderItem];
+    //   localStorage.setItem("cartItems", JSON.stringify(updatedCartItems));
+    //   setCartData(updatedCartItems);
+    //   toast.success("New Product Added to Cart");
+    // }
+
+    if (user) {
+      const result = await dispatch(
+        addToCart({ productId, size: size.size, quantity: Number(quantity) })
+      );
+      if (addToCart.rejected.match(result)) {
+        toast.error(result.payload?.message || "Failed to add to cart");
+      } else {
+        toast.success("Product added to cart");
       }
-
-      updatedCartItems[existingItemIndex] = {
-        ...updatedCartItems[existingItemIndex],
-        quantity: newQuantity,
-      };
-
-      localStorage.setItem("cartItems", JSON.stringify(updatedCartItems));
-      setCartData(updatedCartItems);
-      toast.success("Cart Updated");
     } else {
-      // Add new item to cart
-      const updatedCartItems = [...cartItems, orderItem];
-      localStorage.setItem("cartItems", JSON.stringify(updatedCartItems));
-      setCartData(updatedCartItems);
-      toast.success("New Product Added to Cart");
+      dispatch(
+        addToLocalCart({
+          product: { ...product },
+          size: size.size,
+          quantity: Number(quantity),
+        })
+      );
+      toast.success("Product added to cart");
     }
   };
 

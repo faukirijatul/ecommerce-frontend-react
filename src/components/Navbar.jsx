@@ -11,6 +11,8 @@ const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const { setSearch, showSearch, setShowSearch, cartData } =
     useContext(ShopContext);
+  
+  console.log(cartData, 'cartData')
 
   const dispatch = useDispatch();
   const { user, logoutLoading } = useSelector((state) => state.user);

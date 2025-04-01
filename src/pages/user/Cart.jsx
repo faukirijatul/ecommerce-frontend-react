@@ -1,57 +1,102 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext } from "react";
 import { ShopContext } from "../../context/ShopContext";
 import Title from "../../components/Title";
 import { AiOutlineDelete } from "react-icons/ai";
 import CartTotal from "../../components/CartTotal";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { removeFromCart, removeFromLocalCart, updateCartItem, updateLocalCart } from "../../redux/slices/cartSlice";
+import { toast } from "react-toastify";
 
 const Cart = () => {
-  const { cartData, setCartData, currency } = useContext(ShopContext);
+  const { cartData, currency } = useContext(ShopContext);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if (localStorage.getItem("cartItems")) {
-      localStorage.setItem("cartItems", JSON.stringify(cartData));
-    }
-  }, [cartData]);
+  const { user } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
 
   console.log("====================================");
   console.log(cartData);
   console.log("====================================");
 
-  const increaseQuantity = (productId, size) => {
-    setCartData((prevCart) => {
-      const updatedCart = prevCart.map((item) =>
-        item._id === productId && item.size === size
-          ? { ...item, quantity: item.quantity + 1 }
-          : item
-      );
+  // const increaseQuantity = (productId, size) => {
+  //   setCartData((prevCart) => {
+  //     const updatedCart = prevCart.map((item) =>
+  //       item._id === productId && item.size === size
+  //         ? { ...item, quantity: item.quantity + 1 }
+  //         : item
+  //     );
 
-      localStorage.setItem("cartItems", JSON.stringify(updatedCart));
-      return updatedCart;
-    });
+  //     localStorage.setItem("cartItems", JSON.stringify(updatedCart));
+  //     return updatedCart;
+  //   });
+  // };
+
+  const increaseQuantity = async (productId, size, currentQuantity) => {
+    if (user) {
+      const result = await dispatch(updateCartItem({
+        productId,
+        size,
+        quantity: currentQuantity + 1
+      }));
+      if (updateCartItem.rejected.match(result)) {
+        toast.error(result.payload?.message || "Failed to update quantity");
+      }
+    } else {
+      dispatch(updateLocalCart({ productId, size, quantity: currentQuantity + 1 }));
+    }
   };
 
-  const decreaseQuantity = (productId, size) => {
-    setCartData((prevCart) => {
-      const updatedCart = prevCart.map((item) =>
-        item._id === productId && item.size === size && item.quantity > 1
-          ? { ...item, quantity: item.quantity - 1 }
-          : item
-      );
+  // const decreaseQuantity = (productId, size) => {
+  //   setCartData((prevCart) => {
+  //     const updatedCart = prevCart.map((item) =>
+  //       item._id === productId && item.size === size && item.quantity > 1
+  //         ? { ...item, quantity: item.quantity - 1 }
+  //         : item
+  //     );
 
-      localStorage.setItem("cartItems", JSON.stringify(updatedCart));
-      return updatedCart;
-    });
+  //     localStorage.setItem("cartItems", JSON.stringify(updatedCart));
+  //     return updatedCart;
+  //   });
+  // };
+
+  const decreaseQuantity = async (productId, size, currentQuantity) => {
+    if (currentQuantity > 1) {
+      if (user) {
+        const result = await dispatch(updateCartItem({
+          productId,
+          size,
+          quantity: currentQuantity - 1
+        }));
+        if (updateCartItem.rejected.match(result)) {
+          toast.error(result.payload?.message || "Failed to update quantity");
+        }
+      } else {
+        dispatch(updateLocalCart({ productId, size, quantity: currentQuantity - 1 }));
+      }
+    }
   };
 
-  const handleDelete = (id, size) => {
-    const filtered = cartData.filter(
-      (product) => !(product._id === id && product.size === size)
-    );
-    setCartData(filtered);
-    if (localStorage.getItem("cartItems")) {
-      localStorage.setItem("cartItems", JSON.stringify(filtered));
+  // const handleDelete = (id, size) => {
+  //   const filtered = cartData.filter(
+  //     (product) => !(product._id === id && product.size === size)
+  //   );
+  //   setCartData(filtered);
+  //   if (localStorage.getItem("cartItems")) {
+  //     localStorage.setItem("cartItems", JSON.stringify(filtered));
+  //   }
+  // };
+
+  const handleDelete = async (productId, size) => {
+    if (user) {
+      const result = await dispatch(removeFromCart({ productId, size }));
+      if (removeFromCart.rejected.match(result)) {
+        toast.error(result.payload?.message || "Failed to remove item");
+      } else {
+        toast.success("Product removed from cart");
+      }
+    } else {
+      dispatch(removeFromLocalCart({ productId, size }));
+      toast.success("Product removed from cart");
     }
   };
 
@@ -64,25 +109,25 @@ const Cart = () => {
       <div>
         {cartData.map((product) => (
           <div
-            key={product._id + product.size}
+            key={product.product._id + product.size}
             className="py-4 border-t border-b text-gray-700 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4"
           >
             <div className="flex items-start gap-6">
               <img
-                src={product.image[0].url}
-                alt={product.name}
+                src={product.product.image[0].url}
+                alt={product.product.name}
                 className="w-16 sm:w-20 border"
               />
               <div>
                 <p
                   className="text-base sm:text-lg font-medium line-clamp-2 leading-6 sm:leading-6"
-                  title={product.name}
+                  title={product.product.name}
                 >
-                  {product.name}
+                  {product.product.name}
                 </p>
                 <div className="flex items-center gap-5 mt-2">
                   <p>
-                    {currency} {product.price.toLocaleString("id-ID")}
+                    {currency} {product.product.price.toLocaleString("id-ID")}
                   </p>
                   <p className="px-2 sm:px-3 sm:py-1 border bg-slate-50">
                     {product.size}
@@ -97,7 +142,7 @@ const Cart = () => {
                     className="border border-gray-700 py-1 px-3 active:bg-gray-200"
                     onClick={() => {
                       if (product.quantity > 1) {
-                        decreaseQuantity(product._id, product.size);
+                        decreaseQuantity(product.product._id, product.size, product.quantity);
                       }
                     }}
                   >
@@ -111,19 +156,19 @@ const Cart = () => {
                   />
                   <button
                     className="border border-gray-700 py-1 px-3 active:bg-gray-200"
-                    onClick={() => increaseQuantity(product._id, product.size)}
+                    onClick={() => increaseQuantity(product.product._id, product.size, product.quantity)}
                   >
                     +
                   </button>
                 </div>
                 <p className="font-semibold">
                   {currency}{" "}
-                  {(product.price * product.quantity).toLocaleString("id")}
+                  {(product.product.price * product.quantity).toLocaleString("id")}
                 </p>
               </div>
               <AiOutlineDelete
                 className="text-2xl hover:text-red-400 cursor-pointer"
-                onClick={() => handleDelete(product._id, product.size)}
+                onClick={() => handleDelete(product.product._id, product.size)}
               />
             </div>
           </div>
