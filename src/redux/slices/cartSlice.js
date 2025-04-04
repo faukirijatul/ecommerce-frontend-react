@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { logoutUser } from "./userSlice";
+import { createOrder } from "./orderSlice";
 
 const api = axios.create({
   baseURL: `${import.meta.env.VITE_API_URL}/api/v1/cart`,
@@ -164,6 +165,9 @@ const cartSlice = createSlice({
         state.items = action.payload.cart.products || [];
       })
       .addCase(logoutUser.fulfilled, (state) => {
+        state.items = [];
+      })
+      .addCase(createOrder.fulfilled, (state) => {
         state.items = [];
       });
   },

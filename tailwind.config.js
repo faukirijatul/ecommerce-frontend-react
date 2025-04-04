@@ -5,7 +5,14 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      animation: {
+        fadeIn: "fadeIn 0.5s ease-in-out",
+        check: "check 0.5s ease-in-out",
+        xmark: "xmark 0.5s ease-in-out",
+        pulseRing: "pulseRing 1.5s infinite ease-in-out",
+      },
+    },
   },
   plugins: [],
 }

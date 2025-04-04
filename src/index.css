@@ -17,3 +17,79 @@ a.active hr {
 .no-spinner {
   -moz-appearance: textfield;
 }
+
+@layer utilities {
+  .animate-reverse {
+    animation-direction: reverse;
+  }
+
+  .animate-fadeIn {
+    animation: fadeIn 0.5s ease-in-out;
+  }
+
+  .animate-check {
+    animation: check 0.5s ease-in-out;
+  }
+
+  .animate-xmark {
+    animation: xmark 0.5s ease-in-out;
+  }
+
+  .animate-pulse-ring {
+    animation: pulseRing 1.5s infinite ease-in-out;
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes check {
+  0% {
+    stroke-dasharray: 0 100;
+    opacity: 0;
+  }
+  50% {
+    stroke-dasharray: 50 100;
+    opacity: 1;
+  }
+  100% {
+    stroke-dasharray: 100 100;
+  }
+}
+
+@keyframes xmark {
+  0% {
+    stroke-dasharray: 0 100;
+    opacity: 0;
+  }
+  50% {
+    stroke-dasharray: 50 100;
+    opacity: 1;
+  }
+  100% {
+    stroke-dasharray: 100 100;
+  }
+}
+
+@keyframes pulseRing {
+  0% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.3;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+}

@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { products } from "../assets/products";
 import { ShopContext } from "./ShopContext";
 import { useDispatch, useSelector } from "react-redux";
 import { bulkAddToCart, getCart } from "../redux/slices/cartSlice";
@@ -41,7 +40,6 @@ export const ShopeContextProvider = ({ children }) => {
 
           dispatch(getCart());
         } else {
-          // If no local items, just get the server cart
           dispatch(getCart());
         }
       }
@@ -58,7 +56,6 @@ export const ShopeContextProvider = ({ children }) => {
   };
 
   const value = {
-    products,
     currency,
     deliveryFee,
     search,

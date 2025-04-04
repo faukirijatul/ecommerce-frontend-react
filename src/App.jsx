@@ -20,6 +20,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getUser } from "./redux/slices/userSlice";
 import { AdminRoute, AuthRoute } from "./lib/routeProtector.jsx";
 import Loading from "./components/Loading.jsx";
+import Success from "./pages/user/Success.jsx";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -43,6 +44,7 @@ const App = () => {
           <Route path="contact" element={<Contact />} />
           <Route path="product/:productId" element={<Product />} />
           <Route path="cart" element={<Cart />} />
+          <Route path="success" element={<Success />} />
           <Route
             path="login"
             element={

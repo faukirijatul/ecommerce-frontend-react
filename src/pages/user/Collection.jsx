@@ -8,10 +8,13 @@ import { getAllProducts } from "../../redux/slices/productSlice";
 import { useLocation, useNavigate } from "react-router-dom";
 import { MdNavigateBefore, MdNavigateNext } from "react-icons/md";
 import { ShopContext } from "../../context/ShopContext";
+import ProductItemSkeleton from "../../components/ProductItemSkeleton";
 
 const Collection = () => {
   const dispatch = useDispatch();
-  const { products } = useSelector((state) => state.product);
+  const { products, getAllProductsLoading } = useSelector(
+    (state) => state.product
+  );
   const { search: contextSearch, setSearch: setContextSearch } =
     useContext(ShopContext);
   const navigate = useNavigate();
@@ -40,7 +43,13 @@ const Collection = () => {
     if (searchFromUrl !== contextSearch) {
       setContextSearch(searchFromUrl);
     }
-  }, [location.search, contextSearch, setContextSearch, searchParams, filters.search]);
+  }, [
+    location.search,
+    contextSearch,
+    setContextSearch,
+    searchParams,
+    filters.search,
+  ]);
 
   // Fetch products when filters change
   useEffect(() => {
@@ -276,21 +285,23 @@ const Collection = () => {
             <option value="createdAt-asc">Oldest</option>
           </select>
         </div>
-
-        {/* Products */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
-          {filteredProducts.map((product) => (
-            <ProductItem
-              key={product._id}
-              productId={product._id}
-              image={product.image[0]?.url}
-              name={product.name}
-              price={product.price}
-              sold={product.sold}
-            />
-          ))}
-        </div>
-
+        {/* Products */}{" "}
+        {getAllProductsLoading ? (
+          <ProductItemSkeleton />
+        ) : (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+            {filteredProducts.map((product) => (
+              <ProductItem
+                key={product._id}
+                productId={product._id}
+                image={product.image[0]?.url}
+                name={product.name}
+                price={product.price}
+                sold={product.sold}
+              />
+            ))}
+          </div>
+        )}
         {/* Pagination */}
         <div className="flex justify-center mt-8">
           {/* Previous Page Button */}

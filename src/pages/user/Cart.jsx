@@ -14,23 +14,6 @@ const Cart = () => {
   const { user } = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
-  console.log("====================================");
-  console.log(cartData);
-  console.log("====================================");
-
-  // const increaseQuantity = (productId, size) => {
-  //   setCartData((prevCart) => {
-  //     const updatedCart = prevCart.map((item) =>
-  //       item._id === productId && item.size === size
-  //         ? { ...item, quantity: item.quantity + 1 }
-  //         : item
-  //     );
-
-  //     localStorage.setItem("cartItems", JSON.stringify(updatedCart));
-  //     return updatedCart;
-  //   });
-  // };
-
   const increaseQuantity = async (productId, size, currentQuantity) => {
     if (user) {
       const result = await dispatch(updateCartItem({
@@ -45,19 +28,6 @@ const Cart = () => {
       dispatch(updateLocalCart({ productId, size, quantity: currentQuantity + 1 }));
     }
   };
-
-  // const decreaseQuantity = (productId, size) => {
-  //   setCartData((prevCart) => {
-  //     const updatedCart = prevCart.map((item) =>
-  //       item._id === productId && item.size === size && item.quantity > 1
-  //         ? { ...item, quantity: item.quantity - 1 }
-  //         : item
-  //     );
-
-  //     localStorage.setItem("cartItems", JSON.stringify(updatedCart));
-  //     return updatedCart;
-  //   });
-  // };
 
   const decreaseQuantity = async (productId, size, currentQuantity) => {
     if (currentQuantity > 1) {
@@ -75,16 +45,6 @@ const Cart = () => {
       }
     }
   };
-
-  // const handleDelete = (id, size) => {
-  //   const filtered = cartData.filter(
-  //     (product) => !(product._id === id && product.size === size)
-  //   );
-  //   setCartData(filtered);
-  //   if (localStorage.getItem("cartItems")) {
-  //     localStorage.setItem("cartItems", JSON.stringify(filtered));
-  //   }
-  // };
 
   const handleDelete = async (productId, size) => {
     if (user) {
