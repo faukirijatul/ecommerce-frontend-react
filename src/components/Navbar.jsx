@@ -130,7 +130,7 @@ const Navbar = () => {
       </div>
 
       <div
-        className={`absolute top-0 left-0 bottom-0 overflow-hidden bg-white transition-all duration-300 shadow-lg ${
+        className={`absolute top-0 left-0 bottom-0 overflow-hidden bg-white transition-all duration-300 z-50 shadow-lg ${
           menuOpen ? "w-full" : "w-0"
         }`}
       >
