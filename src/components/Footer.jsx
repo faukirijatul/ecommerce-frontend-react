@@ -11,26 +11,55 @@ const Footer = () => {
             Tokobaju
           </Link>
           <p className="w-full md:w-2/3 text-gray-600 mt-5">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-            voluptatum, quae dolores eum quibusdam expedita quia.
+            Tokobaju is your one-stop shop for stylish and affordable clothing.
+            We are committed to providing high-quality products and excellent
+            customer service.
           </p>
         </div>
 
         <div>
           <p className="font-medium text-xl mb-5">COMPANY</p>
           <ul className="flex flex-col gap-1 text-gray-600">
-            <li>Home</li>
-            <li>About</li>
-            <li>Delivery</li>
-            <li>Privacy Policy</li>
+            <li>
+              <Link to="/" onClick={() => moveToTop()}>
+                Home
+              </Link>
+            </li>
+            <li>
+              <Link to="/collection" onClick={() => moveToTop()}>
+                Collection
+              </Link>
+            </li>
+            <li>
+              <Link to="/about" onClick={() => moveToTop()}>
+                About
+              </Link>
+            </li>
+            <li>
+              <Link to="/contact" onClick={() => moveToTop()}>
+                Contact
+              </Link>
+            </li>
           </ul>
         </div>
 
         <div>
           <p className="font-medium text-xl mb-5">GET IN TOUCH</p>
           <ul className="flex flex-col gap-1 text-gray-600">
-            <li>+6287845352397</li>
-            <li>faukiofficial@gmail.com</li>
+            <li>
+              <a
+                href="https://wa.me/6287845352397"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                +6287845352397
+              </a>
+            </li>
+            <li>
+              <a href="mailto:faukiofficial@gmail.com">
+                faukiofficial@gmail.com
+              </a>
+            </li>
           </ul>
         </div>
       </div>
@@ -38,7 +67,7 @@ const Footer = () => {
       <div>
         <hr />
         <p className="text-center text-gray-500 my-5">
-          &copy; {new Date().getFullYear()}.{" "}
+          © {new Date().getFullYear()}.{" "}
           <Link to="/" className="font-medium" onClick={() => moveToTop()}>
             Tokobaju
           </Link>{" "}

@@ -19,14 +19,19 @@ const Contact = () => {
           <h2 className="text-xl font-semibold">Our Store</h2>
           <div className="flex flex-col gap-1">
             <p>
-              <span className="font-semibold">Address:</span> 123 Main Street,
-              City, Country
+              <span className="font-semibold">Address:</span> Bogor, West Java, Indonesia
             </p>
             <p>
-              <span className="font-semibold">Phone:</span> +1 123-456-7890
+              <span className="font-semibold">Phone:</span> <a
+                href="https://wa.me/6287845352397"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                +6287845352397
+              </a>
             </p>
             <p>
-              <span className="font-semibold">Email:</span> support@tokobaju.com
+              <span className="font-semibold">Email:</span> faukiofficial@gmail.com
             </p>
             <p>
               <span className="font-semibold">Opening Hours:</span> Monday to
@@ -42,7 +47,7 @@ const Contact = () => {
             something amazing together!
           </p>
           <button className="border border-gray-400 py-1.5 px-3.5 w-fit">
-            <a href="mailto:careers@tokobaju.com">Email Us</a>
+            <a href="mailto:faukiofficial@gmail.com">Email Us</a>
           </button>
         </div>
       </div>
