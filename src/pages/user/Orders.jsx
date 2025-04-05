@@ -6,6 +6,7 @@ import { getUserOrders } from "../../redux/slices/orderSlice";
 import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import { moveToTop } from "../../lib/moveToTop";
+import OrdersSkeleton from "../../components/OrdersSkeleton";
 
 const Orders = () => {
   const navigate = useNavigate();
@@ -36,7 +37,7 @@ const Orders = () => {
       </div>
 
       {getUserOrdersLoading ? (
-        <div className="text-center py-10">Loading your orders...</div>
+        <OrdersSkeleton />
       ) : userOrders && userOrders.length > 0 ? (
         <div className="space-y-8">
           {userOrders.map((order) => (
@@ -65,6 +66,8 @@ const Orders = () => {
                           ? "bg-green-500"
                           : order.status === "Shipped"
                           ? "bg-blue-500"
+                          : order.status === "Cancelled"
+                          ? "bg-red-500"
                           : "bg-yellow-500"
                       }`}
                     ></div>
@@ -85,8 +88,18 @@ const Orders = () => {
                   <div className="flex gap-10">
                     <div>
                       <p className="text-sm font-medium mb-1">Shipping to:</p>
-                      <p className="text-sm">{order.deliveryData.fullName}</p>
-                      <p className="text-sm">{order.deliveryData.city}</p>
+                      <p className="text-sm">
+                        {order.deliveryData.fullName} |{" "}
+                        {order.deliveryData.phone}
+                      </p>
+                      <p className="text-sm">{order.deliveryData.email}</p>
+                      <p className="text-sm">
+                        {order.deliveryData.street &&
+                          order.deliveryData.street + ", "}
+                        {order.deliveryData.state}, {order.deliveryData.city}
+                        {order.deliveryData.zipCode &&
+                          ", " + order.deliveryData.zipCode}
+                      </p>
                     </div>
 
                     <button className="border border-gray-400 p-2 h-fit text-sm rounded hover:bg-gray-50 transition">
@@ -154,8 +167,19 @@ const Orders = () => {
           ))}
         </div>
       ) : (
-        <div className="text-center py-10">
-          <p>You don't have any orders yet.</p>
+        <div className="text-center py-20">
+          <h2 className="text-xl font-medium text-gray-700 mb-4">
+            No Orders Found
+          </h2>
+          <p className="text-gray-500 mb-6">
+            You haven't placed any orders yet. Start shopping now!
+          </p>
+          <button
+            className="bg-gray-700 text-white py-2 px-4 hover:bg-gray-900 transition-colors rounded"
+            onClick={() => navigate("/collection")}
+          >
+            Start Shopping
+          </button>
         </div>
       )}
     </div>

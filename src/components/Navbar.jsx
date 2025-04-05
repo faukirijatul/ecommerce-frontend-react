@@ -70,7 +70,7 @@ const Navbar = () => {
 
       <div className="flex items-center gap-4 md:gap-6">
         <IoSearchOutline
-          className="text-xl md:text-2xl cursor-pointer text-gray-600 hover:text-violet-600 transition duration-300"
+          className="text-xl md:text-2xl cursor-pointer text-gray-600 hover:text-gray-900 transition duration-300"
           onClick={() => {
             setShowSearch(!showSearch);
             setSearch("");
@@ -78,15 +78,15 @@ const Navbar = () => {
         />
 
         <Link to="/cart" className="relative group">
-          <IoCartOutline className="text-xl md:text-2xl text-gray-600 group-hover:text-violet-600 transition duration-300" />
-          <span className="absolute leading-4 bottom-[-5px] right-[-5px] text-[8px] bg-violet-600 text-white text-center aspect-square w-4 rounded-full">
+          <IoCartOutline className="text-xl md:text-2xl text-gray-600 group-hover:text-gray-900 transition duration-300" />
+          <span className="absolute leading-4 bottom-[-5px] right-[-5px] text-[8px] bg-gray-800 text-white text-center aspect-square w-4 rounded-full">
             {cartCount || 0}
           </span>
         </Link>
 
         {!user ? (
           <Link to={`/login?redirect=${pathname}`}>
-            <button className="bg-violet-600 text-white px-4 py-2 md:px-6 md:py-2 rounded-full text-xs md:text-sm font-medium hover:bg-violet-700 transition duration-300">
+            <button className="bg-gray-900 text-white px-4 py-2 md:px-6 md:py-2 rounded-full text-xs md:text-sm font-medium hover:bg-gray-800 transition duration-300">
               Login
             </button>
           </Link>

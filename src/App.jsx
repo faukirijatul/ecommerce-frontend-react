@@ -21,12 +21,11 @@ import { getUser } from "./redux/slices/userSlice";
 import { AdminRoute, AuthRoute } from "./lib/routeProtector.jsx";
 import Loading from "./components/Loading.jsx";
 import Success from "./pages/user/Success.jsx";
+import Profile from "./pages/user/Profile.jsx";
 
 const App = () => {
   const dispatch = useDispatch();
-  const { user, getUserLoading } = useSelector((state) => state.user);
-
-  console.log(user);
+  const { getUserLoading } = useSelector((state) => state.user);
 
   useEffect(() => {
     dispatch(getUser());
@@ -42,6 +41,7 @@ const App = () => {
           <Route path="collection" element={<Collection />} />
           <Route path="about" element={<About />} />
           <Route path="contact" element={<Contact />} />
+          <Route path="profile" element={<Profile />} />
           <Route path="product/:productId" element={<Product />} />
           <Route path="cart" element={<Cart />} />
           <Route path="success" element={<Success />} />
@@ -78,6 +78,7 @@ const App = () => {
           <Route path="create/:productId" element={<CreateProduct />} />
           <Route path="products" element={<AllProducts />} />
           <Route path="orders" element={<AllOrders />} />
+          <Route path="profile" element={<Profile />} />
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>

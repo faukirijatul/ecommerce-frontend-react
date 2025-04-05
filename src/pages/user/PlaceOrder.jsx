@@ -41,7 +41,6 @@ const PlaceOrder = () => {
 
   const handlePlaceOrder = (e) => {
     e.preventDefault();
-    console.log(method)
     if (method === "cod") {
       dispatch(createOrder(data)).then((result) => {
         if (result.meta.requestStatus === "fulfilled") {

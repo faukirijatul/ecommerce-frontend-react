@@ -1,50 +1,24 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { verifyPayment } from "../../redux/slices/orderSlice";
 
 const Success = () => {
+  const dispatch = useDispatch();
+  const {verifyPaymentSuccess, verifyPaymentError, verifyPaymentLoading} = useSelector((state) => state.order);
   const [searchParams] = useSearchParams();
-  const [status, setStatus] = useState("loading"); // "loading", "success", "error"
   const orderId = searchParams.get("orderId");
   const session_id = searchParams.get("session_id");
 
   useEffect(() => {
-    const verifyPayment = async () => {
-      try {
-        const response = await axios.post(
-          `${import.meta.env.VITE_API_URL}/api/v1/order/verify-stripe`,
-          { orderId, session_id },
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-            withCredentials: true,
-          }
-        );
-
-        if (response.data.success) {
-          setStatus("success");
-        } else {
-          setStatus("error");
-        }
-      } catch (error) {
-        console.error("Verification failed:", error);
-        setStatus("error");
-      }
-    };
-
-    if (orderId) {
-      verifyPayment();
-    } else {
-      setStatus("error");
-    }
-  }, [orderId, session_id]);
+    dispatch(verifyPayment({ orderId, session_id }));
+  }, [orderId, session_id, dispatch]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
       <div className="text-center">
         {/* Loading State */}
-        {status === "loading" && (
+        {verifyPaymentLoading && (
           <div className="flex flex-col items-center gap-4">
             <div className="relative">
               <div className="w-16 h-16 border-4 border-violet-200 rounded-full animate-spin border-t-violet-600"></div>
@@ -59,7 +33,7 @@ const Success = () => {
         )}
 
         {/* Success State */}
-        {status === "success" && (
+        {verifyPaymentSuccess && (
           <div className="flex flex-col items-center gap-4 animate-fadeIn">
             <div className="relative">
               <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center">
@@ -97,7 +71,7 @@ const Success = () => {
         )}
 
         {/* Error State */}
-        {status === "error" && (
+        {verifyPaymentError && (
           <div className="flex flex-col items-center gap-4 animate-fadeIn">
             <div className="relative">
               <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center">

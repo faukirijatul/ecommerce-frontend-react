@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { logoutUser } from "./userSlice";
-import { createOrder } from "./orderSlice";
+import { createOrder, verifyPayment } from "./orderSlice";
 
 const api = axios.create({
   baseURL: `${import.meta.env.VITE_API_URL}/api/v1/cart`,
@@ -155,19 +155,46 @@ const cartSlice = createSlice({
         state.bulkAddToCartLoading = false;
         state.bulkAddToCartError = action.payload || "Failed to sync cart";
       })
+      .addCase(getCart.pending, (state) => {
+        state.getCartLoading = true;
+      })
       .addCase(getCart.fulfilled, (state, action) => {
+        state.getCartLoading = false;
         state.items = action.payload.cart.products || [];
+      })
+      .addCase(getCart.rejected, (state, action) => {
+        state.getCartLoading = false;
+        state.getCartError = action.payload || "Failed to get cart";
+      })
+      .addCase(updateCartItem.pending, (state) => {
+        state.updateCartItemLoading = true;
       })
       .addCase(updateCartItem.fulfilled, (state, action) => {
+        state.updateCartItemLoading = false;
         state.items = action.payload.cart.products || [];
       })
+      .addCase(updateCartItem.rejected, (state, action) => {
+        state.updateCartItemLoading = false;
+        state.updateCartItemError = action.payload || "Failed to update cart";
+      })
+      .addCase(removeFromCart.pending, (state) => {
+        state.removeFromCartLoading = true;
+      })
       .addCase(removeFromCart.fulfilled, (state, action) => {
+        state.removeFromCartLoading = false;
         state.items = action.payload.cart.products || [];
+      })
+      .addCase(removeFromCart.rejected, (state, action) => {
+        state.removeFromCartLoading = false;
+        state.removeFromCartError = action.payload || "Failed to remove from cart";
       })
       .addCase(logoutUser.fulfilled, (state) => {
         state.items = [];
       })
       .addCase(createOrder.fulfilled, (state) => {
+        state.items = [];
+      })
+      .addCase(verifyPayment.fulfilled, (state) => {
         state.items = [];
       });
   },

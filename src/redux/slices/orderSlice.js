@@ -13,6 +13,12 @@ const initialState = {
   order: null,
   createOrderLoading: false,
   getUserOrdersLoading: false,
+  verifyPaymentLoading: false,
+  verifyPaymentSuccess: false,
+  verifyPaymentError: null,
+  getOrdersLoading: false,
+  getOrderLoading: false,
+  updateOrderLoading: false,
 };
 
 // create order
@@ -59,6 +65,63 @@ export const getUserOrders = createAsyncThunk(
   }
 );
 
+export const verifyPayment = createAsyncThunk(
+  "order/verifyPayment",
+  async ({ orderId, session_id }, { rejectWithValue }) => {
+    try {
+      const response = await api.post("/verify-stripe", {
+        orderId,
+        session_id,
+      });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response.data.message || "Verify payment failed"
+      );
+    }
+  }
+);
+
+export const getAllOrders = createAsyncThunk(
+  "order/getAllOrders",
+  async (params = {}, { rejectWithValue }) => {
+    try {
+      const response = await api.get("/", { params });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response.data.message || "Get orders failed"
+      );
+    }
+  }
+);
+
+export const getOrderById = createAsyncThunk(
+  "order/getOrderById",
+  async (orderId, { rejectWithValue }) => {
+    try {
+      const response = await api.get(`/${orderId}`);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data.message || "Get order failed");
+    }
+  }
+);
+
+export const updateOrderStatus = createAsyncThunk(
+  "order/updateOrderStatus",
+  async ({ orderId, status }, { rejectWithValue }) => {
+    try {
+      const response = await api.put(`/${orderId}`, { status });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response.data.message || "Update order status failed"
+      );
+    }
+  }
+);
+
 const orderSlice = createSlice({
   name: "order",
   initialState,
@@ -82,7 +145,7 @@ const orderSlice = createSlice({
       })
       .addCase(createOrderStripe.fulfilled, (state, action) => {
         state.createOrderLoading = false;
-        console.log(action.payload)
+        console.log(action.payload);
         window.location.replace(action.payload.url);
       })
       .addCase(createOrderStripe.rejected, (state, action) => {
@@ -94,10 +157,72 @@ const orderSlice = createSlice({
       })
       .addCase(getUserOrders.fulfilled, (state, action) => {
         state.getUserOrdersLoading = false;
-          state.userOrders = action.payload.orders;
+        state.userOrders = action.payload.orders;
       })
       .addCase(getUserOrders.rejected, (state, action) => {
         state.getUserOrdersLoading = false;
+        toast.error(action.payload);
+      })
+      .addCase(verifyPayment.pending, (state) => {
+        state.verifyPaymentLoading = true;
+      })
+      .addCase(verifyPayment.fulfilled, (state, action) => {
+        state.verifyPaymentLoading = false;
+        state.order = action.payload.order;
+        state.verifyPaymentSuccess = true;
+        toast.success("Payment verified");
+      })
+      .addCase(verifyPayment.rejected, (state, action) => {
+        state.verifyPaymentLoading = false;
+        state.verifyPaymentError = action.payload;
+        toast.error(action.payload);
+      })
+      .addCase(getAllOrders.pending, (state) => {
+        state.getOrdersLoading = true;
+      })
+      .addCase(getAllOrders.fulfilled, (state, action) => {
+        state.getOrdersLoading = false;
+        state.orders = action.payload.orders;
+      })
+      .addCase(getAllOrders.rejected, (state, action) => {
+        state.getOrdersLoading = false;
+        toast.error(action.payload);
+      })
+      .addCase(getOrderById.pending, (state) => {
+        state.getOrderLoading = true;
+      })
+      .addCase(getOrderById.fulfilled, (state, action) => {
+        state.getOrderLoading = false;
+        state.order = action.payload.order;
+      })
+      .addCase(getOrderById.rejected, (state, action) => {
+        state.getOrderLoading = false;
+        toast.error(action.payload);
+      })
+      .addCase(updateOrderStatus.pending, (state) => {
+        state.updateOrderLoading = true;
+      })
+      .addCase(updateOrderStatus.fulfilled, (state, action) => {
+        state.updateOrderLoading = false;
+        state.order = action.payload.order;
+        // Update orders array if exists
+        const index = state.orders.findIndex(
+          (o) => o._id === action.payload.order._id
+        );
+        if (index !== -1) {
+          state.orders[index] = action.payload.order;
+        }
+        // Update userOrders array if exists
+        const userIndex = state.userOrders.findIndex(
+          (o) => o._id === action.payload.order._id
+        );
+        if (userIndex !== -1) {
+          state.userOrders[userIndex] = action.payload.order;
+        }
+        toast.success("Order status updated");
+      })
+      .addCase(updateOrderStatus.rejected, (state, action) => {
+        state.updateOrderLoading = false;
         toast.error(action.payload);
       });
   },

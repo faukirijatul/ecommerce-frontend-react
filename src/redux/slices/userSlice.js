@@ -18,6 +18,8 @@ const initialState = {
   getUserError: null,
   logoutLoading: false,
   logoutError: null,
+  updateUserLoading: false,
+  updateUserError: null,
 };
 
 export const registerUser = createAsyncThunk(
@@ -64,6 +66,20 @@ export const logoutUser = createAsyncThunk(
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data.message || "Logout failed");
+    }
+  }
+);
+
+export const updateUser = createAsyncThunk(
+  "users/updateUser",
+  async (userData, { rejectWithValue }) => {
+    try {
+      const response = await api.put("/profile", userData);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response.data.message || "Update user failed"
+      );
     }
   }
 );
@@ -132,6 +148,21 @@ const authSlice = createSlice({
       .addCase(logoutUser.rejected, (state, action) => {
         state.logoutLoading = false;
         state.logoutError = action.payload;
+        toast.error(action.payload);
+      })
+      .addCase(updateUser.pending, (state) => {
+        state.updateUserLoading = true;
+        state.updateUserError = null;
+      })
+      .addCase(updateUser.fulfilled, (state, action) => {
+        state.updateUserLoading = false;
+        state.updateUserError = null;
+        state.user = action.payload.user;
+        toast.success("Profile updated successfully");
+      })
+      .addCase(updateUser.rejected, (state, action) => {
+        state.updateUserLoading = false;
+        state.updateUserError = action.payload;
         toast.error(action.payload);
       });
   },

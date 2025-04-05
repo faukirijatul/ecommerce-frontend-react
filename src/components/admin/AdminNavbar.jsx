@@ -25,7 +25,7 @@ const AdminNavbar = () => {
         {/* menu dropdown on hover */}
         <div className="absolute hidden group-hover:block right-0 pt-3">
           <div className="flex flex-col gap-2 w-36 px-5 bg-slate-100 text-gray-500 rounded py-1 border">
-            <p className="py-1 cursor-pointer hover:text-black">Profile</p>
+            <Link to="/admin/profile" className="py-1 cursor-pointer hover:text-black">Profile</Link>
             <p
               className="py-1 cursor-pointer hover:text-black"
               onClick={handleLogout}

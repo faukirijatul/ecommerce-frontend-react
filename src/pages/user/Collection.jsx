@@ -251,13 +251,25 @@ const Collection = () => {
             <p className="flex gap-2">
               <input
                 type="checkbox"
-                value={"Winterwear"}
-                id="Winterwear"
-                checked={filters.subCategory.includes("Winterwear")}
-                onChange={() => handleSubCategory("Winterwear")}
+                value={"Dresses"}
+                id="Dresses"
+                checked={filters.subCategory.includes("Dresses")}
+                onChange={() => handleSubCategory("Dresses")}
               />
-              <label htmlFor="Winterwear" className="cursor-pointer">
-                Winterwear
+              <label htmlFor="Dresses" className="cursor-pointer">
+                Dresses
+              </label>
+            </p>
+            <p className="flex gap-2">
+              <input
+                type="checkbox"
+                value={"Accessories"}
+                id="Accessories"
+                checked={filters.subCategory.includes("Accessories")}
+                onChange={() => handleSubCategory("Accessories")}
+              />
+              <label htmlFor="Accessories" className="cursor-pointer">
+                Accessories
               </label>
             </p>
           </div>
